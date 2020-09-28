@@ -1,0 +1,30 @@
+{
+    "name": "onetoweb/mybusiness",
+    "description": "MyBusiness API Client",
+    "keywords": [
+        "api",
+        "php",
+        "mybusiness"
+    ],
+    "type": "library",
+    "homepage": "https://github.com/onetoweb/mybusiness",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan van 't Ende",
+            "email": "jvantende@onetoweb.nl"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "require-dev": {
+        "symfony/error-handler": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Onetoweb\\MyBusiness\\": "src/"
+        }
+    }
+}
