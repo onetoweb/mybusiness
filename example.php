@@ -12,6 +12,7 @@ $username = 'username';
 $password = 'password';
 $baseUri = 'https://CLIENTNAME.mybusiness.nl/api/MyConnect/v1/';
 
+
 // setup client
 $client = new Client($baseUri, $username, $password);
 
@@ -45,7 +46,7 @@ try {
     // get products
     $products = $client->get('product', ['page' => 1]);
     
-    $productkey = $products->results[0]->productkey;
+    $productkey = $products['results'][0]['productkey'];
     
     // get product
     $product = $client->get("product/$productkey");
@@ -65,7 +66,7 @@ try {
     // get relations
     $relations = $client->get('relation', ['page' => 1]);
     
-    $searchname = $relations->results[0]->searchname;
+    $searchname = $relations['results'][0]['searchname'];
     
     // get relation
     $relation = $client->get("relation/$searchname");
@@ -73,7 +74,7 @@ try {
     // get relation delivery addresses
     $deliveryaddresses = $client->get("relation/$searchname/deliveryaddress");
     
-    $addressname = $deliveryaddress->results[0]->addressname;
+    $addressname = $deliveryaddress['results'][0]['addressname'];
     
     // get deliveryaddress
     $deliveryaddress = $client->get("relation/$searchname/deliveryaddress/$addressname");
@@ -88,7 +89,7 @@ try {
         'phone' => '0123456789',
     ]);
     
-    $searchname = $relation->searchname;
+    $searchname = $relation['searchname'];
     
     // create delivery address
     $deliveryaddress = $client->post("relation/$searchname/deliveryaddress", [
@@ -103,12 +104,12 @@ try {
         'defaultaddress' => 'J',
     ]);
     
-    $addressname = $deliveryaddress->addressname;
+    $addressname = $deliveryaddress['addressname'];
     
     // get orders
     $orders = $client->get('order', ['page' => 1]);
     
-    $nmbr = $orders->results[0]->nmbr;
+    $nmbr = $orders['results'][0]['nmbr'];
     
     // get order
     $order = $client->get("order/$nmbr");
@@ -130,7 +131,7 @@ try {
         'quantity' => 1,
     ]);
     
-    $sequence = $order->products[0]->sequence;
+    $sequence = $order['products'][0]['sequence'];
     
     // remove product from the order
     $order = $client->delete("order/$nmbr/product/$productkey/sequence/$sequence");
@@ -138,7 +139,7 @@ try {
     // get assets
     $assets = $client->get('asset', ['page' => 1]);
     
-    $assetNmbr = $assets->results[0]->nmbr;
+    $assetNmbr = $assets['results'][0]['nmbr'];
     
     // get asset
     $asset = $client->get("asset/$assetNmbr");
@@ -147,8 +148,8 @@ try {
     $reservations = $client->get('reservation', ['page' => 1]);
     
     // get reservation
-    $assetNmbr = $reservations->results[0]->nmbr;
-    $sequence = $reservations->results[0]->sequence;
+    $assetNmbr = $reservations['results'][0]['nmbr'];
+    $sequence = $reservations['results'][0]['sequence'];
     
     $reservation = $client->get("reservation/$assetNmbr/$sequence");
     

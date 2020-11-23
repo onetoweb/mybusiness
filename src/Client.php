@@ -184,9 +184,9 @@ class Client
      * @param string $endpoint
      * @param array $query = []
      * 
-     * @return mixed \stdClass|null|array
+     * @return mixed null|array
      */
-    public function get(string $endpoint, array $query = [])
+    public function get(string $endpoint, array $query = []): ?array
     {
         return $this->request('GET', $endpoint, [], $query);
     }
@@ -196,9 +196,9 @@ class Client
      * @param array $data = []
      * @param array $query = []
      * 
-     * @return mixed \stdClass|null|array
+     * @return mixed null|array
      */
-    public function post(string $endpoint, array $data = [], array $query = [])
+    public function post(string $endpoint, array $data = [], array $query = []): ?array
     {
         return $this->request('POST', $endpoint, $data, $query);
     }
@@ -207,9 +207,9 @@ class Client
      * @param string $endpoint
      * @param array $query = []
      * 
-     * @return mixed \stdClass|null|array
+     * @return mixed null|array
      */
-    public function delete(string $endpoint, array $query = [])
+    public function delete(string $endpoint, array $query = []): ?array
     {
         return $this->request('DELETE', $endpoint, [], $query);
     }
@@ -220,9 +220,9 @@ class Client
      * @param array $data = []
      * @param array $query = []
      * 
-     * @return mixed \stdClass|null|array
+     * @return mixed null|array
      */
-    public function request(string $method, string $endpoint, array $data = [], array $query = [])
+    public function request(string $method, string $endpoint, array $data = [], array $query = []): ?array
     {
         if ($this->token == null or $this->token->isExpired()) {
             $this->refreshAccessToken();
@@ -249,7 +249,7 @@ class Client
             
             $response = $this->client->request($method, $endpoint, $options);
             
-            return json_decode($response->getBody()->getContents());
+            return json_decode($response->getBody()->getContents(), true);
             
         } catch (GuzzleRequestException $guzzleRequestException) {
             
