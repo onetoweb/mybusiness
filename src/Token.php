@@ -2,39 +2,42 @@
 
 namespace Onetoweb\MyBusiness;
 
+use Stringable;
+use DateTime;
+
 /**
  * MyBusiness Api Token
- *
+ * 
  * @author Jonathan van 't Ende <jvantende@onetoweb.nl>
  * @copyright Onetoweb B.V.
  */
-class Token
+class Token implements Stringable
 {
-    /**
-     * @var string
-     */
-    private $accessToken;
-    
-    /**
-     * @var string
-     */
-    private $refreshToken;
-    
-    /**
-     * @var \DateTime
-     */
-    private $expires;
-    
     /**
      * @param string $accessToken
      * @param string $refreshToken
-     * @param \DateTime $expires
+     * @param DateTime $expires
      */
-    public function __construct(string $accessToken, string $refreshToken, \DateTime $expires)
+    public function __construct(
+        
+        #[\SensitiveParameter]
+        private string $accessToken,
+        
+        #[\SensitiveParameter]
+        private string $refreshToken,
+        
+        private DateTime $expires
+        
+    ) {
+        
+    }
+    
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
-        $this->expires = $expires;
+        return $this->accessToken;
     }
     
     /**
@@ -66,6 +69,6 @@ class Token
      */
     public function isExpired(): bool
     {
-        return (bool) $this->expires < new \DateTime();
+        return (bool) ($this->expires < new \DateTime());
     }
 }

@@ -6,6 +6,9 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use GuzzleHttp\RequestOptions;
 use Onetoweb\MyBusiness\Exception\RequestException;
+use Onetoweb\MyBusiness\Config\Method;
+use Onetoweb\MyBusiness\Token;
+use Closure;
 
 /**
  * MyBusiness Api Client
@@ -16,39 +19,35 @@ use Onetoweb\MyBusiness\Exception\RequestException;
 class Client
 {
     /**
-     * @var string
-     */
-    private $username;
-    
-    /**
-     * @var string
-     */
-    private $password;
-    
-    /**
      * @var Token
      */
-    private $token;
+    private ?Token $token = null;
     
     /**
      * @var callable
      */
-    private $tokenUpdateCallback;
+    private ?Closure $tokenUpdateCallback = null;
     
     /**
      * @var GuzzleClient
      */
-    private $client;
+    private ?GuzzleClient $client = null;
     
     /**
      * @param string $username
      * @param string $password
      */
-    public function __construct(string $baseUri, string $username, string $password)
-    {
-        $this->username = $username;
-        $this->password = $password;
+    public function __construct(
         
+        #[\SensitiveParameter]
+        private string $baseUri,
+        
+        #[\SensitiveParameter]
+        private string $username,
+        
+        #[\SensitiveParameter]
+        private string $password
+    ) {
         $this->client = new GuzzleClient([
             'base_uri' => $baseUri
         ]);
@@ -188,7 +187,7 @@ class Client
      */
     public function get(string $endpoint, array $query = []): ?array
     {
-        return $this->request('GET', $endpoint, [], $query);
+        return $this->request(Method::GET, $endpoint, [], $query);
     }
     
     /**
@@ -200,7 +199,7 @@ class Client
      */
     public function post(string $endpoint, array $data = [], array $query = []): ?array
     {
-        return $this->request('POST', $endpoint, $data, $query);
+        return $this->request(Method::POST, $endpoint, $data, $query);
     }
     
     /**
@@ -211,18 +210,18 @@ class Client
      */
     public function delete(string $endpoint, array $query = []): ?array
     {
-        return $this->request('DELETE', $endpoint, [], $query);
+        return $this->request(Method::DELETE, $endpoint, [], $query);
     }
     
     /**
-     * @param string $method
+     * @param Method $method
      * @param string $endpoint
      * @param array $data = []
      * @param array $query = []
      * 
      * @return mixed null|array
      */
-    public function request(string $method, string $endpoint, array $data = [], array $query = []): ?array
+    public function request(Method $method, string $endpoint, array $data = [], array $query = []): ?array
     {
         if ($this->token == null or $this->token->isExpired()) {
             $this->refreshAccessToken();
@@ -247,7 +246,7 @@ class Client
         
         try {
             
-            $response = $this->client->request($method, $endpoint, $options);
+            $response = $this->client->request($method->value, $endpoint, $options);
             
             return json_decode($response->getBody()->getContents(), true);
             
